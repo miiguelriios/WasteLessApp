@@ -1,6 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import itemsRouter from "./routes/items.js";
+import categoriesRouter from "./routes/categories.js";
+import suppliersRouter from "./routes/suppliers.js";
+import alertsRouter from "./routes/alerts.js";
+
 import pool from "./db.js"; // use centralized connection
 
 dotenv.config();
@@ -10,6 +14,9 @@ app.use(express.json());
 
 // Routes
 app.use("/items", itemsRouter);
+app.use("/categories", categoriesRouter);
+app.use("/suppliers", suppliersRouter);
+app.use("/alerts", alertsRouter);
 
 // Test route
 app.get("/", async (req, res) => {

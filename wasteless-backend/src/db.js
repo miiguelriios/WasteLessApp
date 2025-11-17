@@ -6,11 +6,11 @@ const { Pool } = pkg;
 
 // Create a connection pool
 const pool = new Pool({
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT,
+  user: String(process.env.PGUSER || "postgres"),
+  host: String(process.env.PGHOST || "localhost"),
+  database: String(process.env.PGDATABASE || "wastelessdb"),
+  password: String(process.env.PGPASSWORD || "Miguelrm"),   
+  port: Number(process.env.PGPORT || 5432),         
 });
 
 // Optional: test connection on startup

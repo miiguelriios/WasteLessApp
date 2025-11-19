@@ -1,4 +1,7 @@
 // index.js (root)
+import cron from "node-cron";
+import { runAlertJob } from "./src/jobs/alertWorker.js";
+
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -33,3 +36,30 @@ app.use("/auth", authRouter); // <-- MOUNTED HERE
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
+
+// Manual trigger for testing (keep during dev)
+app.post("/alerts/run", async (req, res) => {
+  try {
+    const windowDays = Number(process.env.ALERT_WINDOW_DAYS || 3);
+    const result = await runAlertJob({ windowDays });
+    res.json({ ok: true, ...result });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// Schedule daily run
+if (process.env.ENABLE_ALERT_CRON === "true") {
+  const cronExpr = process.env.CRON_SCHEDULE || "0 6 * * *"; // default 06:00 daily
+  cron.schedule(cronExpr, async () => {
+    try {
+      const windowDays = Number(process.env.ALERT_WINDOW_DAYS || 3);
+      const result = await runAlertJob({ windowDays });
+      console.log("✅ Alert job ran:", result);
+    } catch (e) {
+      console.error("❌ Alert job failed:", e.message);
+    }
+  });
+  console.log(`⏰ Alert cron scheduled: "${process.env.CRON_SCHEDULE}" (window=${process.env.ALERT_WINDOW_DAYS}d)`);
+}

@@ -52,7 +52,7 @@ export default function LoginPage() {
         </button>
       </form>
       <p className="mt-3 text-xs text-gray-500">
-        Tip: use the seeded admin: <code>admin@zerowasteone.local / admin123</code> (change later).
+         admin: <code>admin@zerowasteone.local / admin123</code>.
       </p>
     </div>
   );

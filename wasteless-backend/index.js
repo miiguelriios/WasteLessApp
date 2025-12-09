@@ -8,6 +8,7 @@ import cors from "cors";
 
 import pool from "./src/db.js";
 
+import alertsRouter from "./src/routes/alerts.js";
 import itemsRouter from "./src/routes/items.js";
 import categoriesRouter from "./src/routes/categories.js";
 import suppliersRouter from "./src/routes/suppliers.js";
@@ -29,6 +30,7 @@ app.get("/", async (_req, res) => {
 app.get("/auth/_health", (_req, res) => res.json({ ok: true })); // <-- should return 200 if /auth is mounted
 
 // mount routers
+app.use("/alerts", alertsRouter);
 app.use("/items", itemsRouter);
 app.use("/categories", categoriesRouter);
 app.use("/suppliers", suppliersRouter);

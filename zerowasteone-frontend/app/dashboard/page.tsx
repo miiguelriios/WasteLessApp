@@ -18,6 +18,26 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const EXPIRY_WINDOW_DAYS = 3;
+
+  function daysUntil(dateStr: string | null | undefined) {
+    if (!dateStr) return Infinity;
+    const today = new Date();
+    const d = new Date(dateStr);
+    const diffMs = d.getTime() - today.getTime();
+    return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  }
+
+  const nextToExpireItems =
+    stats?.nextToExpire
+      ?.filter((it) => daysUntil(it.expiry_date) <= EXPIRY_WINDOW_DAYS)
+      .sort(
+        (a, b) =>
+          new Date(a.expiry_date!).getTime() -
+          new Date(b.expiry_date!).getTime()
+      ) ?? [];
+
+
   async function load() {
     try {
       setError(null);
@@ -62,39 +82,43 @@ export default function DashboardPage() {
       )}
 
       {/* Next to Expire */}
-      {stats && (
-        <section className="rounded-2xl bg-white p-6 shadow">
-          <h2 className="mb-4 text-xl font-semibold">Next to Expire</h2>
-          {stats.nextToExpire.length === 0 ? (
-            <p className="text-sm text-gray-600">No items with upcoming expiry.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="border-b bg-gray-50 text-gray-600">
-                    <th className="p-2">ID</th>
-                    <th className="p-2">Name</th>
-                    <th className="p-2">Qty</th>
-                    <th className="p-2">Unit</th>
-                    <th className="p-2">Expiry Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.nextToExpire.map((it) => (
-                    <tr key={it.item_id} className="border-b">
-                      <td className="p-2">{it.item_id}</td>
-                      <td className="p-2">{it.name}</td>
-                      <td className="p-2">{it.quantity}</td>
-                      <td className="p-2">{it.unit ?? "-"}</td>
-                      <td className="p-2">{it.expiry_date ?? "-"}</td>
+        {stats && (
+          <section className="rounded-2xl bg-white p-6 shadow">
+            <h2 className="mb-4 text-xl font-semibold">Next to Expire</h2>
+            {nextToExpireItems.length === 0 ? (
+              <p className="text-sm text-gray-600">No items with upcoming expiry.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-b bg-gray-50 text-gray-600">
+                      <th className="p-2">ID</th>
+                      <th className="p-2">Name</th>
+                      <th className="p-2">Qty</th>
+                      <th className="p-2">Unit</th>
+                      <th className="p-2">Expiry Date</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-      )}
+                  </thead>
+                  <tbody>
+                    {nextToExpireItems.map((it) => (
+                      <tr key={it.item_id} className="border-b">
+                        <td className="p-2">{it.item_id}</td>
+                        <td className="p-2">{it.name}</td>
+                        <td className="p-2">{it.quantity}</td>
+                        <td className="p-2">{it.unit ?? "-"}</td>
+                        <td className="p-2">
+                          {it.expiry_date
+                            ? new Date(it.expiry_date).toLocaleDateString()
+                            : "-"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+        )}
 
       {/* Low Stock */}
         {stats && (

@@ -37,6 +37,9 @@ export default function NavBar() {
         <Link href="/" className="text-gray-600 hover:text-black">
           Inventory
         </Link>
+        <Link href="/alerts" className="text-gray-600 hover:text-black">
+          Alerts
+        </Link>
       </div>
 
       <div className="flex items-center gap-4">

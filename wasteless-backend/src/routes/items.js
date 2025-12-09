@@ -52,18 +52,31 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE item
+// DELETE /items/:id
 router.delete("/:id", async (req, res) => {
   const id = Number(req.params.id);
+  if (Number.isNaN(id)) {
+    return res.status(400).json({ error: "Invalid item id" });
+  }
+
   try {
-    const result = await pool.query("DELETE FROM items WHERE item_id=$1", [id]);
-    if (result.rowCount === 0) return res.status(404).json({ error: "Not found" });
-    res.status(204).end();
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Failed to delete item" });
+    // 1) delete any alerts for this item
+    await pool.query("DELETE FROM alerts WHERE item_id = $1", [id]);
+
+    // 2) delete the item itself
+    const result = await pool.query("DELETE FROM items WHERE item_id = $1", [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+
+    return res.status(204).send(); // success, no content
+  } catch (err) {
+    console.error("Error deleting item:", err);
+    return res.status(500).json({ error: "Failed to delete item" });
   }
 });
+
 
 // 📊 Stats for dashboard
 router.get("/stats", async (_req, res) => {

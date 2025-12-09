@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { API_URL } from "@/lib/api";
+import RequireAuth from "../components/RequireAuth";
 
 type Alert = {
   alert_id: number;
@@ -56,6 +57,7 @@ export default function AlertsPage() {
   }, []);
 
   return (
+    <RequireAuth>
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Alerts</h1>
@@ -124,5 +126,6 @@ export default function AlertsPage() {
 
       {loading && <p className="text-sm text-gray-600">Loading alerts…</p>}
     </div>
+    </RequireAuth>
   );
 }

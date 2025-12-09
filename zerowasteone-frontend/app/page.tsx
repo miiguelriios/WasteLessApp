@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api";
 import type { Item, Category, Supplier } from "@/lib/types";
+import RequireAuth from "./components/RequireAuth";
 
 function daysUntil(dateStr?: string | null) {
   if (!dateStr) return Infinity;
@@ -101,6 +102,7 @@ export default function HomePage() {
   }, [items]);
 
   return (
+    <RequireAuth>
     <main className="min-h-dvh bg-gray-50">
       <div className="mx-auto max-w-6xl p-6 space-y-8">
         <header className="flex items-end justify-between">
@@ -228,5 +230,6 @@ export default function HomePage() {
         </section>
       </div>
     </main>
+    </RequireAuth>
   );
 }

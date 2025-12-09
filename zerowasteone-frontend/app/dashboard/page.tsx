@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { API_URL } from "@/lib/api";
+import RequireAuth from "../components/RequireAuth";
 
 type StatResponse = {
   total_items: string | number;
@@ -63,6 +64,7 @@ export default function DashboardPage() {
   useEffect(() => { load(); }, []);
 
   return (
+    <RequireAuth>
     <div className="mx-auto max-w-6xl p-6 space-y-8">
       <div className="flex items-end justify-between">
         <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -178,6 +180,7 @@ export default function DashboardPage() {
         </section>
       )}
     </div>
+    </RequireAuth>
   );
 }
 

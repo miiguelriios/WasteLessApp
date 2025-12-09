@@ -39,7 +39,7 @@ app.use("/auth", authRouter); // <-- MOUNTED HERE
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
 
-// Manual trigger for testing (keep during dev)
+// Manual trigger for testing
 app.post("/alerts/run", async (req, res) => {
   try {
     const windowDays = Number(process.env.ALERT_WINDOW_DAYS || 3);
